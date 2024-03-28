@@ -51,21 +51,28 @@ router.get("/find/:id", async (req, res) => {
 
 //Get all products
 router.get("/", async (req, res) => {
-    const nQuery = req.query.new;
-    const cQuery = req.query.category;
+    const newQuery = req.query.new;
+    const categoryQuery = req.query.category;
+    const saleQuery = req.query.sale;
     try {
         let products;
 
-        if (nQuery) {
+        if (newQuery) {
             products = await Product.find().sort({ createdAt: -1 }).limit(5);
-        } else if (cQuery) {
+        } else if (categoryQuery) {
             products = await Product.find({ 
                 categories: { 
-                    $in: [cQuery],
+                    $in: [categoryQuery],
+                },
+            });
+        } else if (saleQuery) {
+            products = await Product.find({ 
+                categories: { 
+                    $in: [saleQuery],
                 },
             });
         } else {
-            //products = await Product.find();
+            products = await Product.find();
         }
         res.status(200).json(products);
     } catch (err) {
